@@ -10,5 +10,24 @@ package Business.DeliveryMan;
  * @author harold
  */
 public class DeliveryMan {
+    int deliveryManId;
+    String deliveryManName;
+
+    public int getDeliveryManId() {
+        return deliveryManId;
+    }
+
+    public void setDeliveryManId(int deliveryManId) {
+        this.deliveryManId = deliveryManId;
+    }
+
+    public String getDeliveryManName() {
+        return deliveryManName;
+    }
+
+    public void setDeliveryManName(String deliveryManName) {
+        this.deliveryManName = deliveryManName;
+    }
     
 }
+

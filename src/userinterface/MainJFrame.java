@@ -8,10 +8,19 @@ import Business.EcoSystem;
 import Business.DB4OUtil.DB4OUtil;
 
 import Business.Organization;
+import userinterface.SystemAdminWorkArea.SystemAdminWorkAreaJPanel;
+import Business.Customer.Customer;
+import Business.Role.CustomerRole;
+
 import Business.UserAccount.UserAccount;
+
+import Business.UserAccount.UserAccountDirectory;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import userinterface.CustomerRole.CustomerAreaJPanel;
+import userinterface.CustomerRole.CustomerJPanel;
+import userinterface.SystemAdminWorkArea.SystemAdminWorkAreaJPanel;
 
 /**
  *
@@ -24,13 +33,23 @@ public class MainJFrame extends javax.swing.JFrame {
      */
     private EcoSystem system;
     private DB4OUtil dB4OUtil = DB4OUtil.getInstance();
+    private SystemAdminWorkAreaJPanel systemAdminArea;
+    private CustomerAreaJPanel customerAdminArea;
+    UserAccount userAccount;
+    CustomerJPanel customerPanel;
 
     public MainJFrame() {
         initComponents();
         system = dB4OUtil.retrieveSystem();
+        //systemAdminArea = new SystemAdminWorkAreaJPanel();
+        UserAccount userAccount = system.getUserAccountDirectory().getUserAccountList().get(1);
+        //customerAdminArea = new CustomerAreaJPanel( ,userAccount);
+        customerPanel = new CustomerJPanel();
+        container.setVisible(false);
         this.setSize(1680, 1050);
+       
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -123,7 +142,32 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void loginJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginJButtonActionPerformed
         // Get user name
-       
+        String userName = userNameJTextField.getText();
+        char[] passCharArray = passwordField.getPassword();
+        String pass = String.valueOf(passCharArray);
+
+        userAccount = system.getUserAccountDirectory().authenticateUser(userName, pass);
+      
+        if(userAccount==null){
+            JOptionPane.showMessageDialog(null, "Invalid credentials, please try again");
+            return;
+        }else{
+            //loginJPanel.setVisible(false);
+            container.setVisible(true);
+            //leftPanel.setVisible(true);
+            userNameJTextField.setText("");
+            passwordField.setText("");
+            loadUserPanel(userAccount);
+        }
+    }
+    
+    private void loadUserPanel(UserAccount userAccount) {
+        if(userAccount.getRole() instanceof CustomerRole) {
+            this.add(customerPanel);
+            //container.add("workArea", userAccount.getRole().createWorkArea(container, userAccount, system));
+        }
+//        CardLayout layout = (CardLayout) container.getLayout();
+//        layout.next(container);
     }//GEN-LAST:event_loginJButtonActionPerformed
 
     private void logoutJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutJButtonActionPerformed
